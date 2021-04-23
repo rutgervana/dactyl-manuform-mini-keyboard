@@ -12,7 +12,7 @@
 ;; Shape parameters ;;
 ;;;;;;;;;;;;;;;;;;;;;;
 
-(def nrows 4)
+(def nrows 5)
 (def ncols 6)
 
 (def α (/ π 12))                        ; curvature of the columns
@@ -25,7 +25,11 @@
 ; (def column-style :fixed)
 (def pinky-15u false)
 
-(def thumb-count :three)                ; could also be :five
+(def thumb-count :five)                ; could also be :five
+
+(def holder-type "blackpill-f401-gx12") ;toggles between "promicro-jack" and "blackpill-f401-gx12"
+
+(def oled-holder true)
 
 (defn column-offset [column] (cond
                                (= column 2) [0 2.82 -4.5]
@@ -41,7 +45,7 @@
 
 (def wall-z-offset -5)                 ; original=-15 length of the first downward-sloping part of the wall (negative)
 (def wall-xy-offset 5)                  ; offset in the x and/or y direction for the first downward-sloping part of the wall (negative)
-(def wall-thickness 3)                  ; wall thickness parameter; originally 5
+(def wall-thickness 4)                  ; wall thickness parameter; originally 5
 
 ;; Settings for column-style == :fixed
 ;; The defaults roughly match Maltron settings
@@ -157,6 +161,9 @@
                         (translate [0 0 (+ 5 plate-thickness)])
                         (color [240/255 223/255 175/255 1])))})
 
+(def keyhole-fill (->> (cube keyswitch-height keyswitch-width plate-thickness)
+                       (translate [0 0 (/ plate-thickness 2)])))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Placement Functions ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -248,6 +255,18 @@
                          (not= row lastrow))]
            (->> (sa-cap (if (and (true? pinky-15u) (= column lastcol)) 1.5 1))
                 (key-place column row)))))
+(def caps-fill
+  (apply union
+         (conj (for [column columns
+               row rows
+               :when (or (and (= column 0) (< row 4))
+                         (and (.contains [1 2 3] column) (< row 5))
+                         (and (.contains [4 5 6] column) (< row 4)))]
+                 (key-place column row keyhole-fill))
+               (list (key-place 0 0 keyhole-fill)
+                 (key-place 0 1 keyhole-fill)
+                 (key-place 0 2 keyhole-fill)))))
+
 
 ;;;;;;;;;;;;;;;;;;;;
 ;; Web Connectors ;;
@@ -383,6 +402,12 @@
   (union
    (thumb-1x-layout (sa-cap 1))
    (thumb-15x-layout (rotate (/ π 2) [0 0 1] (sa-cap 1)))))
+
+(def thumbcaps-fill
+  (union
+   (thumb-1x-layout keyhole-fill)
+   (thumb-15x-layout (rotate (/ π 2) [0 0 1] keyhole-fill))))
+
 
 (def thumb
   (union
@@ -708,17 +733,75 @@
          (screw-insert lastcol 0         bottom-radius top-radius height [-3 9 0])
          (screw-insert 1 lastrow         bottom-radius top-radius height [0 -16 0])))
 
+;;;;;;;;;;;;;;;;;;;;;
+;; Holder cutouts  ;;
+;;;;;;;;;;;;;;;;;;;;;
+
+
+(def holder-offset
+  (case nrows
+    4 -3.5
+    5 0
+    6 2.2))
+
+(def notch-offset
+  (case nrows
+    4 3.35
+    5 0.5
+    6 -5.07))
+
+(when (= holder-type "promicro-jack")
+(def usb-holder-ref (key-position 0 0 (map - (wall-locate2  0  -1) [0 (/ mount-height 2) 0])))
+(def usb-holder-position (map + [(+ 18.8 holder-offset) 18.7 1.3] [(first usb-holder-ref) (second usb-holder-ref) 2]))
+(def usb-holder-space  (translate (map + usb-holder-position [-1.5 (* -1 wall-thickness) 2.9]) (cube 28.666 30 12.4)))
+(def usb-holder-notch  (translate (map + usb-holder-position [-1.5 (+ 4.4 notch-offset) 2.9]) (cube 31.366 1.3 12.4)))
+(def trrs-notch        (translate (map + usb-holder-position [-10.33 (+ 3.6 notch-offset) 6.6]) (cube 8.4 2.4 19.8))))
+
+(when (= holder-type "blackpill-f401-gx12")
+(def usb-holder-ref (key-position 0 0 (map - (wall-locate2  0  -1) [0 (/ mount-height 2) 0])))
+(def usb-holder-position (map + [(+ 18.8 holder-offset) 18.7 1.3] [(first usb-holder-ref) (second usb-holder-ref) 2]))
+(def usb-holder-space  (translate (map + usb-holder-position [-1.5 (* -1 wall-thickness) 2.9]) (cube 25.766 30 25.4)))
+(def usb-holder-notch  (translate (map + usb-holder-position [-1.5 (+ 4.4 notch-offset) 2.9]) (cube 28.466 1.3 25.4)))
+(def trrs-notch        (translate (map + usb-holder-position [-10.33 (+ 3.6 notch-offset) 6.6]) (cube 0 0 0))))
+
+;;;;;;;;;;;;;;;;;;
+;; OLED cutout  ;;
+;;;;;;;;;;;;;;;;;;
+
+(def oled-holder-offset
+  (case nrows
+    4 -3.5
+    5 -14
+    6 10))
+
+(def oled-notch-offset
+  (case nrows
+    4 3.35
+    5 -4
+    6 -5.07))
+
+
+(when (= oled-holder true)
+(def oled-holder-width 40)
+(def oled-notch-length 19)
+(def oled-holder-ref (key-position 0 2 (map - (wall-locate1  0  -1) [0 (/ mount-height 2) 0])))
+(def oled-holder-position (map + [(+ 0 oled-holder-offset) 16 12] [(first oled-holder-ref) (second oled-holder-ref) 2]))
+(def oled-holder-space  (translate (map + oled-holder-position [-1.5 (* -1 wall-thickness) 7]) (cube 12 oled-holder-width 30)))
+(def oled-holder-notch  (translate (map + oled-holder-position [-4.4 (+ 0 oled-notch-offset) 2.5]) (cube 1.3 44.4 21)))
+)
+
 ; Hole Depth Y: 4.4
-(def screw-insert-height 4)
+(def screw-insert-height 5)
 
 ; Hole Diameter C: 4.1-4.4
-(def screw-insert-bottom-radius (/ 4.4 2))
-(def screw-insert-top-radius (/ 4.4 2))
+(def screw-insert-bottom-radius (/ 5.2 2))
+(def screw-insert-top-radius (/ 5.2 2))
 (def screw-insert-holes  (screw-insert-all-shapes screw-insert-bottom-radius screw-insert-top-radius screw-insert-height))
 
 ; Wall Thickness W:\t1.65
 (def screw-insert-outers (screw-insert-all-shapes (+ screw-insert-bottom-radius 1.65) (+ screw-insert-top-radius 1.65) (+ screw-insert-height 1.5)))
 (def screw-insert-screw-holes  (screw-insert-all-shapes 1.7 1.7 350))
+(def screw-insert-screw-countersunk-holes  (screw-insert-all-shapes 2.8 2.8 350))
 
 (def pinky-connectors
   (apply union
@@ -754,24 +837,23 @@
                    thumb-connectors
                    (difference (union case-walls
                                       screw-insert-outers
-                                      pro-micro-holder
-                                      #_usb-holder-holder
-                                      #_trrs-holder)
+                                      )
                                usb-holder-space
-                               usb-jack
-                               trrs-holder-hole
-                               trrs-holder-hole-insert
+                               trrs-notch
+                               oled-holder-space
+                               oled-holder-notch
+                               usb-holder-notch
                                screw-insert-holes))
                   (translate [0 0 -20] (cube 350 350 40))))
 
 (spit "things/right.scad"
       (write-scad model-right))
 
-#_
+
 (spit "things/left.scad"
       (write-scad (mirror [-1 0 0] model-right)))
 
-#_
+
 (spit "things/right-test.scad"
       (write-scad
        (difference
@@ -787,9 +869,68 @@
          caps)
 
         (translate [0 0 -20] (cube 350 350 40)))))
-
-#_
+(spit "things/left-plate.scad"
+      (write-scad
+        (difference
+          (extrude-linear
+            {:height 4 :center false}
+            (project
+              (difference
+                (union
+                  key-holes
+                  ;key-holes-inner
+                  pinky-connectors
+                  ;extra-connectors
+                  connectors
+                  ;inner-connectors
+                  thumb
+                  thumb-connectors
+                  case-walls
+                  thumbcaps-fill
+                  caps-fill
+                  screw-insert-outers
+                  )
+                (translate [0 0 -10] screw-insert-screw-holes)
+                )))
+           (translate [0 0 0]
+           (extrude-linear
+            {:height 2 :center false}
+              (project
+                (translate [0 0 0] screw-insert-screw-countersunk-holes)
+              )))
+          )))
 (spit "things/right-plate.scad"
+      (write-scad
+        (difference
+          (extrude-linear
+            {:height 4 :center false}
+            (project
+              (difference
+                (union
+                  key-holes
+                  ;key-holes-inner
+                  ;pinky-connectors
+                  ;extra-connectors
+                  connectors
+                  ;inner-connectors
+                  thumb
+                  thumb-connectors
+                  case-walls
+                  thumbcaps-fill
+                  caps-fill
+                  screw-insert-outers
+                  )
+                (translate [0 0 -10] screw-insert-screw-holes)
+                )))
+           (translate [0 0 2]
+           (extrude-linear
+            {:height 2 :center false}
+              (project
+                (translate [0 0 0] screw-insert-screw-countersunk-holes)
+              )))
+          )))
+
+(spit "things/right-plate-edge.scad"
       (write-scad
        (cut
         (translate [0 0 -0.1]
@@ -798,7 +939,7 @@
                                       screw-insert-outers)
                                (translate [0 0 -10] screw-insert-screw-holes))))))
 
-#_
+
 (spit "things/test.scad"
       (write-scad
        (difference trrs-holder trrs-holder-hole)))
