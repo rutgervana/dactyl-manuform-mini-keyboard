@@ -7,8 +7,8 @@ This is a fork of the [Dactyl-ManuForm-Mini](https://github.com/l4u/dactyl-manuf
 Here is the list of features which have been added after the fork from the Dactyl Manuform Mini:
 
 - The use of sidenubs is disabled by default. 
-- Blackpill-F401 with GX12 connector holder (OpenScad file and stl are provided). 
-- OLED SSD1306 display holder (OpenScad, stl and 3mf files are provided. Use 3mf file for slicing stl file may cause problems.)
+- Blackpill-F401 with GX12 connector holder (scad and stl files are provided). 
+- OLED SSD1306 display holder (scad and stl files are provided. When changing the openscad model, it may need some repair. This can easily be achieved with meshlab)
 
 ### Option 1: Generate OpenSCAD and STL models
 
@@ -20,7 +20,7 @@ Here is the list of features which have been added after the fork from the Dacty
 
 ### Option 2: Use the stl files
 
-Print right.stl, left.stl, right-plate.stl, left-plate.stl.
+Print right.stl, left.stl, right-plate.stl, left-plate.stl, oled-holder.stl and blackpill-f401-holder.stl.
 
 ## License
 
