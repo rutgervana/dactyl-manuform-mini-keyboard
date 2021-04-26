@@ -759,10 +759,10 @@
 
 (when (= holder-type "blackpill-f401-gx12")
 (def usb-holder-ref (key-position 0 0 (map - (wall-locate2  0  -1) [0 (/ mount-height 2) 0])))
-(def usb-holder-position (map + [(+ 18.8 holder-offset) 18.7 1.3] [(first usb-holder-ref) (second usb-holder-ref) 2]))
-(def usb-holder-space  (translate (map + usb-holder-position [-1.5 (* -1 wall-thickness) 2.9]) (cube 25.766 30 25.4)))
-(def usb-holder-notch  (translate (map + usb-holder-position [-1.5 (+ 4.4 notch-offset) 2.9]) (cube 28.466 1.3 25.4)))
-(def trrs-notch        (translate (map + usb-holder-position [-10.33 (+ 3.6 notch-offset) 6.6]) (cube 0 0 0))))
+(def usb-holder-position (map + [(+ 18.8 holder-offset) 18.7 0] [(first usb-holder-ref) (second usb-holder-ref) 0]))
+(def usb-holder-space  (translate (map + usb-holder-position [-1.5 (* -1 wall-thickness) 0]) (cube 25.766 30 50.8)))
+(def usb-holder-notch  (translate (map + usb-holder-position [-1.5 (+ 4.4 notch-offset) 0]) (cube 28.466 1.3 50.8)))
+)
 
 ;;;;;;;;;;;;;;;;;;
 ;; OLED cutout  ;;
@@ -782,7 +782,7 @@
 
 
 (when (= oled-holder true)
-(def oled-holder-width 33)
+(def oled-holder-width 33.4)
 (def oled-notch-length 19)
 (def oled-notch-back-offset 9)
 (def oled-holder-ref (key-position 0 2 (map - (wall-locate1  0  -1) [0 0 0])))
@@ -841,7 +841,6 @@
                                       )
                                oled-holder-space
                                usb-holder-space
-                               trrs-notch
                                oled-holder-notch
                                usb-holder-notch
                                screw-insert-holes))

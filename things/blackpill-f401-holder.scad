@@ -6,10 +6,10 @@ wall_thickness=2;
 solder_cutout=4.3;
 usb_conn_width=10;
 usb_conn_height=4;
-notch_offset=1.35;
+notch_offset=2.35;
 notch_width=1.1;
 notch_depth=0.95;
-hold_tab_offset=4.05;
+hold_tab_offset=5.05;
 hold_tab_width=wall_thickness;
 hold_tab_depth=wall_thickness;
 union(){
@@ -23,7 +23,8 @@ translate([mcu_width,0,0])cube([wall_thickness,mcu_depth+2*wall_thickness,tray_h
 }
 translate([0,wall_thickness,0])cube([solder_cutout,mcu_depth,wall_thickness]);
 translate([mcu_width-solder_cutout,wall_thickness,0])cube([solder_cutout,mcu_depth,wall_thickness]);
-translate([-wall_thickness,hold_tab_offset+hold_tab_depth,tray_height])rotate([-20,0,0])cube([mcu_width+2*wall_thickness,mcu_depth+2*wall_thickness,20]);
+translate([-wall_thickness,hold_tab_offset+hold_tab_depth,tray_height])rotate([-40,0,0])cube([mcu_width+2*wall_thickness,mcu_depth+2*wall_thickness-30,20]);
+translate([-wall_thickness,hold_tab_offset+hold_tab_depth+cos(40)*(mcu_depth+2*wall_thickness-30),tray_height-sin(40)*(mcu_depth+2*wall_thickness-30)])cube([mcu_width+2*wall_thickness,mcu_depth+2*wall_thickness,20]);
 translate([mcu_width/2-usb_conn_width/2,0,wall_thickness+pcb_height-0.2])cube([usb_conn_width,wall_thickness,usb_conn_height]);
 translate([mcu_width/2,0,17])rotate([-90,0,0])cylinder(wall_thickness,d=12,$fn=100);
 }
