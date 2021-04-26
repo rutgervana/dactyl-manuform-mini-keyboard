@@ -17,6 +17,8 @@ Here is the list of features which have been added after the fork from the Dacty
 * Use OpenSCAD to open a `.scad` file.
 * Make changes to design, repeat `load-file`, OpenSCAD will watch for changes and rerender.
 * When done, use OpenSCAD to export STL files
+* Oled-holder needs to be repaired with Meshlab or other mesh software.
+* The code in test-holders.scad can be used to roughly check the fit of the holders, add it onto the top in the right.scad file.
 
 ### Option 2: Use the stl files
 
