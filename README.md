@@ -56,8 +56,6 @@ I had to activate the following options in `config.h`:
 
 There is a guide in [qmk's official docs](https://beta.docs.qmk.fm/features/feature_rgblight)
 
-![rgb](pics/IMG_20191005_142206.jpg)
-
 ## Flashing with QMK
 
 The QMK source code for the keyboard will be provided in an other repository when available.
