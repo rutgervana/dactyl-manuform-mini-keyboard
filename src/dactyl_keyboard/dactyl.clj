@@ -777,17 +777,18 @@
 (def oled-notch-offset
   (case nrows
     4 3.35
-    5 -4
+    5 -10
     6 -5.07))
 
 
 (when (= oled-holder true)
-(def oled-holder-width 40)
+(def oled-holder-width 33)
 (def oled-notch-length 19)
-(def oled-holder-ref (key-position 0 2 (map - (wall-locate1  0  -1) [0 (/ mount-height 2) 0])))
-(def oled-holder-position (map + [(+ 0 oled-holder-offset) 16 12] [(first oled-holder-ref) (second oled-holder-ref) 2]))
-(def oled-holder-space  (translate (map + oled-holder-position [-1.5 (* -1 wall-thickness) 7]) (cube 12 oled-holder-width 30)))
-(def oled-holder-notch  (translate (map + oled-holder-position [-4.4 (+ 0 oled-notch-offset) 2.5]) (cube 1.3 44.4 21)))
+(def oled-notch-back-offset 9)
+(def oled-holder-ref (key-position 0 2 (map - (wall-locate1  0  -1) [0 0 0])))
+(def oled-holder-position (map + [(+ 0 oled-holder-offset) 16 0] [(first oled-holder-ref) (second oled-holder-ref) 0]))
+(def oled-holder-space  (translate (map + oled-holder-position [-4.6 (+ 0 oled-notch-offset) 27]) (cube (* oled-notch-back-offset 2) oled-holder-width 44)))
+(def oled-holder-notch  (translate (map + oled-holder-position [-4.6 (+ 0 oled-notch-offset) 17]) (cube 1.3 37.4 24)))
 )
 
 ; Hole Depth Y: 4.4
@@ -838,9 +839,9 @@
                    (difference (union case-walls
                                       screw-insert-outers
                                       )
+                               oled-holder-space
                                usb-holder-space
                                trrs-notch
-                               oled-holder-space
                                oled-holder-notch
                                usb-holder-notch
                                screw-insert-holes))
