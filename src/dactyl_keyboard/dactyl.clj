@@ -869,7 +869,7 @@
          caps)
 
         (translate [0 0 -20] (cube 350 350 40)))))
-(spit "things/left-plate.scad"
+(spit "things/right-plate.scad"
       (write-scad
         (difference
           (extrude-linear
@@ -878,11 +878,8 @@
               (difference
                 (union
                   key-holes
-                  ;key-holes-inner
                   pinky-connectors
-                  ;extra-connectors
                   connectors
-                  ;inner-connectors
                   thumb
                   thumb-connectors
                   case-walls
@@ -899,7 +896,7 @@
                 (translate [0 0 0] screw-insert-screw-countersunk-holes)
               )))
           )))
-(spit "things/right-plate.scad"
+(spit "things/left-plate.scad"
       (write-scad
         (difference
           (extrude-linear
@@ -908,11 +905,7 @@
               (difference
                 (union
                   key-holes
-                  ;key-holes-inner
-                  ;pinky-connectors
-                  ;extra-connectors
                   connectors
-                  ;inner-connectors
                   thumb
                   thumb-connectors
                   case-walls
@@ -930,7 +923,7 @@
               )))
           )))
 
-(spit "things/right-plate-edge.scad"
+(spit "things/left-plate-edge.scad"
       (write-scad
        (cut
         (translate [0 0 -0.1]
@@ -939,6 +932,113 @@
                                       screw-insert-outers)
                                (translate [0 0 -10] screw-insert-screw-holes))))))
 
+(spit "things/left-plate-edge-svg.scad"
+      (write-scad
+       (cut
+        (translate [0 0 -0.1]
+                   (union case-walls
+                          pinky-walls
+                          screw-insert-outers)))))
+
+
+;this kind off the projection and the cut do not agree so a small bit is left at the thum cluster
+(spit "things/left-plate-clearance-1.scad"
+      (write-scad
+        (union 
+        (difference
+          (extrude-linear
+            {:height 3 :center false}
+            (project
+              (difference
+                (union
+                  key-holes
+                  connectors
+                  thumb
+                  thumb-connectors
+                  case-walls
+                  thumbcaps-fill
+                  caps-fill
+                  screw-insert-outers
+                  )
+                (translate [0 0 -10] screw-insert-screw-holes)
+                )))
+           (translate [0 0 2]
+           (extrude-linear
+            {:height 2 :center false}
+              (project
+                (translate [0 0 0] screw-insert-screw-countersunk-holes)
+              )))
+          )
+       (translate [0 0 -2]
+       (extrude-linear 
+        {:height 2 :center false}
+       (cut
+        (translate [0 0 -0.1]
+                   (difference (union case-walls
+                                      pinky-walls
+                                      screw-insert-outers)
+                               (translate [0 0 -10] screw-insert-screw-holes)))))))))
+
+;this works a bit better the edge plate is filled in inkscape and imported 
+;there are very minor differences still between bottom and top
+(spit "things/left-plate-clearance-2.scad"
+      (write-scad
+        (union
+        (difference
+          (extrude-linear
+            {:height 3 :center false}
+              (difference
+               (import ["left-plate-fixed.svg"]) 
+                (project
+                (translate [0 0 -10] screw-insert-screw-holes)
+                )))
+           (translate [0 0 1]
+           (extrude-linear
+            {:height 2 :center false}
+              (project
+                (translate [0 0 0] screw-insert-screw-countersunk-holes)
+              )))
+          )
+       (translate [0 0 -2]
+       (extrude-linear 
+        {:height 2 :center false}
+       (cut
+        (translate [0 0 -0.1]
+                   (difference (union case-walls
+                                      pinky-walls
+                                      screw-insert-outers)
+                               (translate [0 0 -10] screw-insert-screw-holes)))))))))
+
+;this works a bit better the edge plate is filled in inkscape and imported 
+;there are very minor differences still between bottom and top
+(spit "things/right-plate-clearance-2.scad"
+      (write-scad
+        (mirror [-1 0 0]
+        (union
+        (difference
+          (extrude-linear
+            {:height 3 :center false}
+              (difference
+               (import ["left-plate-fixed.svg"]) 
+                (project
+                (translate [0 0 -10] screw-insert-screw-holes)
+                )))
+           (translate [0 0 1]
+           (extrude-linear
+            {:height 2 :center false}
+              (project
+                (translate [0 0 0] screw-insert-screw-countersunk-holes)
+              )))
+          )
+       (translate [0 0 -2]
+       (extrude-linear 
+        {:height 2 :center false}
+       (cut
+        (translate [0 0 -0.1]
+                   (difference (union case-walls
+                                      pinky-walls
+                                      screw-insert-outers)
+                               (translate [0 0 -10] screw-insert-screw-holes))))))))))
 
 (spit "things/test.scad"
       (write-scad
